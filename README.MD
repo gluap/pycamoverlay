@@ -22,3 +22,12 @@ This project contains software to record video in sync with GPS and other data o
 * openstreetmap data for the area
 * ffmpeg / avconv
 * PIL
+
+
+### Preparation for map generation (tested on Ubuntu 12.04/14.04)
+
+```
+#!bash
+
+aptitude install python-mapnik2
+```
