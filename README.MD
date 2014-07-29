@@ -22,3 +22,16 @@ This project contains software to record video in sync with GPS and other data o
 * openstreetmap data for the area
 * ffmpeg / avconv
 * PIL
+
+
+### Preparation for map generation (tested on Ubuntu 12.04/14.04)
+To have nice, half-transparent pieces of map like I use, you should first follow https://www.mapbox.com/blog/create-a-custom-map-of-your-city-in-30-minutes-with-tilemill-and-openstreetmap/ to prepare your computer for the rendering of the map  (download map data, prepare a database).
+
+Then install the osmt transparent openstretmap style from https://github.com/andrewharvey/osm-hybrid-carto/
+
+once you're done you can install mapnik
+
+```
+#!bash
+sudo aptitude install python-mapnik2
+```
