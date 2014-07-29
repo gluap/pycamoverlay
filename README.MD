@@ -10,7 +10,7 @@ This project contains software to record video in sync with GPS and other data o
 * picamera
 
 
-## requirements for postprocessing (to produce nice video overlays)
+## requirements for postprocessing (rendering video overlays)
 * mapnik for python 
 * a map style (I use https://github.com/andrewharvey/osm-hybrid-carto because it is half-transparent and therefore perfectly suited for a video overlay)
 * openstreetmap data for the area
