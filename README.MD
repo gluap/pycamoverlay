@@ -7,10 +7,12 @@ This project contains software to record video in sync with GPS and other data o
 * bluetooth or other GPS device working with gpsd
 
 **Optional: If you want to record data from sports devices (heart rate belt, temperature, cadence etc.) you need this:**
+
 * python-ant driver (https://github.com/cowboy-coders/python-ant)
 * ant-usb-stick
 
 **Optional: If you want distance measurements using ultrasonic distance meter (for measuring side distance of cars overtaking you)**
+
 * wiringPi (http://wiringpi.com/) for the ultrasonic distance sensor
 * an ultrasonic distance sensor https://secure.robotshop.com/en/hc-sr04-ultrasonic-range-finder.html
 
