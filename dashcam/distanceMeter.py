@@ -40,6 +40,7 @@ class distanceMeter(threading.Thread):
                 self.current+=1
             except IndexError:
                 print "strange, distance data coming in too slow?"
+                pass
     def stopController(self):
         self.running = False
         self.distanceProcess.send_signal(2)
