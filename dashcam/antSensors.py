@@ -3,6 +3,7 @@ import time
 from ant.core import driver, node, event, message, log
 from ant.core.constants import CHANNEL_TYPE_TWOWAY_RECEIVE, TIMEOUT_NEVER
 import struct
+import numpy
 
 class heartRateCallback(event.EventCallback):
     def __init__(self):
@@ -56,14 +57,17 @@ class cadenceCallback(event.EventCallback):
         '''
         to calculate speed from RPM give the circumference of the wheel.
         '''
-        self.cadence=0
-        self.pedalRevolutions=0
-        self.wheelRevolutions=0
-        self.wheelRPM=0
-        self.speed=0
+        self.cadence=0.
+        self.pedalRevolutions=0.
+        self.wheelRevolutions=0.
+        self.wheelRPM=0.
+        self.wheelRPS=0.
+        self.speed=0.
         self.lastPedalTime=0.
         self.lastWheelTime=0.
         self.wheelCircumference=circ
+        self.pedalEventTime=0.
+        self.wheelEventTime=0.
     def start(self,antnode):
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:CDM'
@@ -79,24 +83,36 @@ class cadenceCallback(event.EventCallback):
         self.channel.unassign()
     def process(self,msg):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
-            (cadenceTime,cadenceRev,wheelTime,wheelRevolutions)=struct.unpack("<H","".join(msg.payload[-8:]))
-            cadenceTime/=1024
-            wheelTime/=1024
+            (pedalTime,pedalRevolutions,wheelTime,wheelRevolutions)=numpy.array(numpy.fromstring("".join(msg.payload[-8:]),dtype=numpy.uint16),dtype="float")
+            pedalTime/=1024.
+            wheelTime/=1024.
             if wheelTime<self.lastWheelTime:
-                lastWheelTime-=64
+                self.lastWheelTime-=64.
             if pedalTime<self.lastPedalTime:
-                pedalTime-=64
+                self.lastPedalTime-=64.
             if wheelRevolutions < self.wheelRevolutions:
-                self.wheelRevolutions-=65536
+                self.wheelRevolutions-=65536.
             if pedalRevolutions < self.pedalRevolutions:
-                self.pedalRevolutions-=65536 
-            self.wheelRPS=(pedalRevolutions-self.pedalRevolutions)/(pedalTime-self.lastPedalTime)*60
-            self.cadence=(wheelRevolutions-self.wheelRevolutions)/(wheelTime-self.lastWheelTime)*60
-            self.speed=self.wheelRPS*self.wheelCircumference*3600
-            self.lastWheelTime=wheelTime
-            self.lastPedalTime=pedalTIme
-            self.wheelRevolutions=wheelRevolutions
-            self.pedalRevolutions=pedalRevolutions
+                self.pedalRevolutions-=65536.
+            if self.lastPedalTime < pedalTime:
+                self.cadence=(pedalRevolutions-self.pedalRevolutions)/(pedalTime-self.lastPedalTime)*60
+                self.lastPedalTime=pedalTime
+                self.pedalRevolutions=pedalRevolutions
+                self.pedalEventTime=time.time()
+            if self.lastWheelTime < wheelTime:
+                self.wheelRPS=(wheelRevolutions-self.wheelRevolutions)/(wheelTime-self.lastWheelTime)
+                self.lastWheelTime=wheelTime
+                self.wheelRevolutions=wheelRevolutions
+                self.wheelRPM=self.wheelRPS*60
+                self.speed=self.wheelRPS*self.wheelCircumference*3600.
+                self.wheelEventTime=time.time()
+            if self.wheelEventTime+3<time.time():
+                self.wheelRPS=0.
+                self.wheelRPM=0.
+                self.speed=0.
+            if self.pedalEventTime+3<time.time():
+                self.cadence=0.
+
 
 class antDevices():
     def __init__(self):
@@ -142,3 +158,17 @@ class antSensors():
     @property
     def temperature(self):
         return self.TEM.temperature
+    
+if __name__ == '__main__':
+    test=antSensors()
+    for i in range(200):
+        try:
+            print test.heartRate,
+            print test.cadence,
+            print test.wheelRPM,
+            print test.temperature
+            time.sleep(.1)
+        except KeyboardInterrupt:
+            test.stopController()
+            test.join()
+            break

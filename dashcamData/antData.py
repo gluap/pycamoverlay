@@ -29,6 +29,8 @@ class antData():
         return self.getFromArray(frame, self.cadences)
     def getWheelRPM(self,frame):
         return self.getFromArray(frame, self.wheelRPMs)
+    def getSpeed(self,frame):
+        return self.getWheelRPM(frame)*60*2.136
     def getTemperature(self,frame):
         return self.getFromArray(frame, self.temperatures)
     def getFromArray(self,frame,inArray):

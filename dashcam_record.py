@@ -5,7 +5,7 @@ maxframes=25*60*360
 import dashcamData
 import random
 import time
-debug=True
+debugging=True
 gpsc = dashcam.gpsController()
 trackStore=dashcamData.gpsData()
 gpsc.start()
@@ -37,7 +37,7 @@ while True:
             lastLat=gpsc.fix.latitude
             trackStore.addPosition(camera.frame.index,gpsc.fix.latitude,gpsc.fix.longitude,gpsc.fix.speed,gpsc.fix.track,gpsc.utc)
             trackStore.dump("/data/%d.track" % randint)
-            if debug:
+            if debugging:
                 print "ant: %f %f %f %f" % (antSensor.heartRate,antSensor.wheelRPM,antSensor.cadence,antSensor.temperature)
         camera.wait_recording(.02)
         if camera.frame.index>lastIndex:

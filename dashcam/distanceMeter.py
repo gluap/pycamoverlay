@@ -20,8 +20,9 @@ class distanceMeter(threading.Thread):
         self.currentdistance=0.0
         self.lastFive=numpy.zeros(5)
         self.lastFiveValid=numpy.zeros(5)
-        self.current=0
-        self.currentValid=0
+        self.current=0.
+        self.currentValid=0.
+        self.currentDistance=0.
         print "created"
     
     def run(self):
@@ -33,7 +34,7 @@ class distanceMeter(threading.Thread):
                 tmp=numpy.fromstring(rawdata,dtype="<f4")[-1]
                 if (numpy.abs(self.lastFive-tmp)<5).any():
                     #      print self.lastFive
-                    self.currentdistance=tmp
+                    self.currentDistance=tmp
                     self.lastFiveValid[self.currentValid%5]=tmp
                     self.currentValid+=1
                 self.lastFive[self.current%5]=tmp
@@ -56,7 +57,7 @@ class distanceMeter(threading.Thread):
         return self.currentDistance
     
 if __name__ == '__main__':
-    test=distanceReader()
+    test=distanceMeter()
     test.start()
     for i in numpy.arange(1000):
         try:
