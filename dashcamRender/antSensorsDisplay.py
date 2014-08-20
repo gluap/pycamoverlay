@@ -3,6 +3,7 @@ Created on Jul 6, 2014
 
 @author: paulg
 '''
+
 import PIL
 import PIL.ImageFont
 import PIL.ImageDraw
@@ -10,16 +11,7 @@ import sys
 sys.path.append("../")
 import dashcamData
 
-'''
-Created on Jul 6, 2014
-
-@author: paulg
-'''
-import PIL
-import PIL.ImageFont
-import PIL.ImageDraw
 import sys
-sys.path.append("../")
 
 class arrayValueDisplay(object):
     def __init__(self,valueArray,size=[200,60],symbolBefore=u"",symbolAfter=u""):
@@ -71,7 +63,7 @@ class heartRateDisplay(arrayValueDisplay):
 class sensorVelocityDisplay(arrayValueDisplay):
     def __init__(self,speedF,size=[200,60]):
         self.caption="SPEED"
-        super(sensorVelocityDisplay,self).__init__(speedF,size,symbolBefore=u"",symbolAfter=" km/h")
+        super(sensorVelocityDisplay,self).__init__(speedF*60*2.136/1000.,size,symbolBefore=u"",symbolAfter=" km/h")
 class cadenceDisplay(arrayValueDisplay):
     def __init__(self,speedF,size=[200,60]):
         self.caption="CADENCE"

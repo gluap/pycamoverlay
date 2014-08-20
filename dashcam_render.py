@@ -45,10 +45,10 @@ while True:
     currentImage.paste(overlayTemperature,(transcoder.width-200,0),overlayTemperature)
     overlayHeartRate=heartRateDisplay.draw(int(currentFrame),fast=fast)
     currentImage.paste(overlayHeartRate,(transcoder.width-200,60),overlayHeartRate)
-#    overlayCadence=cadenceDisplay.draw(int(currentFrame))
-#    currentImage.paste(overlayCadence,(transcoder.width-200,120),overlayCadence)
-#    overlayRPM=wheelRPM.draw(int(currentFrame))
-#    currentImage.paste(overlayRPM,(transcoder.width-200,180),overlayRPM)
+    overlayCadence=cadenceDisplay.draw(int(currentFrame))
+    currentImage.paste(overlayCadence,(transcoder.width-200,120),overlayCadence)
+    overlayRPM=wheelRPM.draw(int(currentFrame))
+    currentImage.paste(overlayRPM,(transcoder.width-200,180),overlayRPM)
     transcoder.writeImage(currentImage)
 #    if currentFrame>1000:
 #        break

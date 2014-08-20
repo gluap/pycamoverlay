@@ -29,7 +29,7 @@ class distanceMeter(threading.Thread):
         print "starting loop"
         while self.running:
             # grab EACH set of gpsd info to clear the buffer
-            try:
+   #         try:
                 rawdata=self.distanceProcess.stdout.read(4)
                 tmp=numpy.fromstring(rawdata,dtype="<f4")[-1]
                 if (numpy.abs(self.lastFive-tmp)<5).any():
@@ -39,9 +39,9 @@ class distanceMeter(threading.Thread):
                     self.currentValid+=1
                 self.lastFive[self.current%5]=tmp
                 self.current+=1
-            except IndexError:
-                print "strange, distance data coming in too slow?"
-                pass
+#            except IndexError:
+#                print "strange, distance data coming in too slow?"
+#                pass
     def stopController(self):
         self.running = False
         self.distanceProcess.send_signal(2)
