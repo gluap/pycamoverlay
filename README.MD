@@ -36,3 +36,10 @@ Finally install mapnik
 #!bash
 sudo aptitude install python-mapnik2
 ```
+
+under ubuntu 12.04 you might have to install some packages using pip (imposm for instance) or from the mapnik repository
+```
+sudo add-apt-repository ppa:mapnik/v2.2.0
+sudo apt-get update
+sudo apt-get install libmapnik libmapnik-dev mapnik-utils python-mapnik
+```
