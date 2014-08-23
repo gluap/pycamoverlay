@@ -11,7 +11,7 @@ class antData():
         else:
             raise Exception("you should either provide outFilename or inFilename")
         
-    def addData(self,frame,heartRate,cadence,wheelrpm,temperature):
+    def addData(self,frame,heartRate,wheelrpm,cadence,temperature):
         if(frame-1>self.lastFrame and frame!=1):
             self.addData(frame-1,heartRate,cadence,wheelrpm,temperature)
         tempdistance=[heartRate,cadence,wheelrpm,temperature]
