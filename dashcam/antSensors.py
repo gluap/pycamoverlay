@@ -116,7 +116,7 @@ class cadenceCallback(event.EventCallback):
 
 class antDevices():
     def __init__(self):
-        self.stick = driver.USB2Driver('/dev/ttyUSB0')
+        self.stick = driver.USB1Driver('/dev/ttyUSB0')
         self.antnode = node.Node(self.stick)
         self.antnode.start()
         self.key = node.NetworkKey('N:ANT+', 'B9A521FBBD72C345'.decode('hex'))
