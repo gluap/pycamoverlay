@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import picamera
 import dashcam
-maxframes=25*60*360
+maxframes=25*120
 import dashcamData
 import random
 import time
@@ -23,6 +23,8 @@ antSensorStore=dashcamData.antData(False,outFilename="/data/%d.ant" % randint)
 
 camera=picamera.PiCamera()
 camera.resolution = (1296,972)
+#camera.resolution = (640,480)
+
 camera.start_recording('/data/%d.h264' % randint,bitrate=0,quantization=25)
 camera.ISO=800
 camera.video_stabilization=1
@@ -37,20 +39,20 @@ gpsc.start()
 while True:
     try:
         if not gpsc.fix.mode==1 and gpsc.fix.latitude!=lastLat:
-            print camera.frame.index
+            print "frame %d" % camera.frame.index
+            print (camera.frame.index,gpsc.fix.latitude,gpsc.fix.longitude,gpsc.fix.speed,gpsc.fix.track,gpsc.utc)
             lastLat=gpsc.fix.latitude
             trackStore.addPosition(camera.frame.index,gpsc.fix.latitude,gpsc.fix.longitude,gpsc.fix.speed,gpsc.fix.track,gpsc.utc)
             trackStore.dump("/data/%d.track" % randint)
+            print("dumped track store")
             if debugging:
-                print "ant: %f %f %f %f distance %f" % (antSensor.heartRate,antSensor.wheelRPM,antSensor.cadence,antSensor.temperature,distanceSensor.distance)
-        camera.wait_recording(.02)
+                print "ant: %f %f %f %f" % (antSensor.heartRate,antSensor.wheelRPM,antSensor.cadence,antSensor.temperature)
+        camera.wait_recording(.05)
         if camera.frame.index>lastIndex:
-#            distanceStore.addDistance(camera.frame.index,distanceSensor.distance,distanceSensor.deviation)
-            #print distanceSensor.distance
             lastIndex=camera.frame.index
             antSensorStore.addData(camera.frame.index,antSensor.heartRate,antSensor.wheelRPM,antSensor.cadence,antSensor.temperature)
-            print antSensor.temperature
         if camera.frame.index>maxframes:
+            print "reached frame limit, closing\n"
             camera.stop_recording()
             trackStore.stopController()
             gpsc.stopController()
@@ -62,9 +64,6 @@ while True:
         camera.stop_recording()
         gpsc.stopController()
         gpsc.join()
-#        distanceStore.close()
-#        distanceSensor.stopController()
-#        distanceSensor.join()
         antSensor.stop()
         antSensor.join()
         break
@@ -72,9 +71,6 @@ while True:
         camera.stop_recording()
         gpsc.stopController()
         gpsc.join()
-#        distanceStore.close()
-##        distanceSensor.stopController()
-#        distanceSensor.join()
         antSensor.stop()
         antSensor.join()
         break
