@@ -1,6 +1,10 @@
 # Raspberry pi dashcam
 This project contains software to record video in sync with GPS and other data on a raspberry pi and later add  a HUD-Like overlay with map and GPS information in post processing. There are lots of dependencies.
 
+Find a demo video of what this project does on: https://www.youtube.com/watch?v=swLGyjKVgmQ 
+False colors are caused by the camera, which is a model without infrared filter.
+
+
 ## requirements for recording on the pi
 * gpsd
 * picamera
