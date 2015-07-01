@@ -1,8 +1,29 @@
 # Raspberry pi dashcam
-This project contains software to record video in sync with GPS and other data on a raspberry pi and later add  a HUD-Like overlay with map and GPS information in post processing. There are lots of dependencies.
+
+
+This project contains software to record video in sync with GPS and
+other data on a raspberry pi and later add  a HUD-Like overlay with
+map and GPS information as well as fitness sensor data in post processing. 
 
 Find a demo video of what this project does on: https://www.youtube.com/watch?v=swLGyjKVgmQ 
 False colors are caused by the camera, which is a model without infrared filter.
+
+The main complication of recording video and data in sync is the 
+fluctuating framerate on a raspberry. To overcome the problem, the recorded
+each recorded datapoint is stored together with the current frame number
+at the time of recording the data point.
+
+In post processing, since so far there seem to be no python around for
+adding overlays to video files (at the time of creation of this project in 2014),
+ffmpeg is used to transcode the video to a raw binary data stream which is
+then modified by means of the python image library, and subsequently fed
+back as a binary stream to ffmpeg for encoding. This was by far the fastest
+method I could come up with, allowing near-realtime transcoding on my laptop.
+
+There are lots of 
+dependencies for the postprocessing software overlaying the HUD, 
+most of it related to generating a semi-transparent map from 
+OpenStreetmap data. Find below how to solve some of them.
 
 
 ## requirements for recording on the pi
