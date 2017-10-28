@@ -1,7 +1,11 @@
 import sys
 import time
 from ant.core import driver, node, event, message, log
+from ant.core.node import Node, Network, ChannelID
 from ant.core.constants import CHANNEL_TYPE_TWOWAY_RECEIVE, TIMEOUT_NEVER
+
+from ant.core.constants import NETWORK_KEY_ANT_PLUS, NETWORK_NUMBER_PUBLIC
+from ant.plus.heartrate import *
 import struct
 import numpy
 
@@ -15,16 +19,24 @@ class heartRateCallback(event.EventCallback):
             self.heartRate = ord(msg.payload[-1])
             self.beatCount = ord(msg.payload[-2])
             self.lastBeat = struct.unpack('<H',"".join(msg.payload[-4:-2]))[0]/1024.
-    def start(self,antnode):
+    def start(self,antnode,network):
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:HRM'
-        self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
+        self.channel.assign(network, CHANNEL_TYPE_TWOWAY_RECEIVE)
         self.channel.setID(120, 0, 0)
-        self.channel.setSearchTimeout(TIMEOUT_NEVER)
-        self.channel.setPeriod(8070)
-        self.channel.setFrequency(57)
+        self.channel.searchTimeout = TIMEOUT_NEVER
+        self.channel.period = 8070
+        self.channel.frequency = 57
         self.channel.open()
         self.channel.registerCallback(self)
+
+        #    channel = antnode.getFreeChannel()
+   # channel.name = 'C:WGT'
+   # channel.assign(net, CHANNEL_TYPE_TWOWAY_RECEIVE)
+   # channel.setID(119, 0, 0)
+   # channel.period = 0x2000  # nebo 0x0020 ???
+   # channel.frequency = 0x39
+
     def stop(self):
             self.channel.close()
             self.channel.unassign()
@@ -38,14 +50,14 @@ class temperatureCallback(event.EventCallback):
                 tempTemperature= struct.unpack('<h',"".join(msg.payload[-2:]))[0]*0.01
                 if tempTemperature!=0:
                     self.temperature=tempTemperature
-    def start(self,antnode):
+    def start(self,antnode,network):
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:TEM'
-        self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
+        self.channel.assign(network, CHANNEL_TYPE_TWOWAY_RECEIVE)
         self.channel.setID(25, 0, 0)
-        self.channel.setSearchTimeout(TIMEOUT_NEVER)
-        self.channel.setPeriod(8192)
-        self.channel.setFrequency(57)
+        self.channel.searchTimeout = TIMEOUT_NEVER
+        self.channel.period = 8192
+        self.channel.frequency = 57
         self.channel.open()
         self.channel.registerCallback(self)
     def stop(self):
@@ -68,14 +80,14 @@ class cadenceCallback(event.EventCallback):
         self.wheelCircumference=circ
         self.pedalEventTime=0.
         self.wheelEventTime=0.
-    def start(self,antnode):
+    def start(self,antnode, network):
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:CDM'
-        self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
+        self.channel.assign(network, CHANNEL_TYPE_TWOWAY_RECEIVE)
         self.channel.setID(121, 0, 0)
-        self.channel.setSearchTimeout(TIMEOUT_NEVER)
-        self.channel.setPeriod(8086)
-        self.channel.setFrequency(57)
+        self.channel.searchTimeout =TIMEOUT_NEVER
+        self.channel.period = 8086
+        self.channel.frequency = 57
         self.channel.open()
         self.channel.registerCallback(self)
     def stop(self):
@@ -116,14 +128,14 @@ class cadenceCallback(event.EventCallback):
 
 class antDevices():
     def __init__(self):
-        self.stick = driver.USB1Driver('/dev/ttyUSB0')
-        self.antnode = node.Node(self.stick)
+        self.stick = driver.USB2Driver(idProduct=0x1008)
+        self.antnode = Node(self.stick)
         self.antnode.start()
-        self.key = node.NetworkKey('N:ANT+', 'B9A521FBBD72C345'.decode('hex'))
-        self.antnode.setNetworkKey(0, self.key)
+        self.network = Network(key=NETWORK_KEY_ANT_PLUS, name='N:ANT+')
+        self.antnode.setNetworkKey(NETWORK_NUMBER_PUBLIC, self.network)
         self.devices=[]
     def add_device(self,device):
-        device.start(self.antnode)
+        device.start(self.antnode, self.network)
         self.devices.append(device)
     def stop(self):
         for device in self.devices:
