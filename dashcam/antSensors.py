@@ -14,7 +14,8 @@ class heartRateCallback(event.EventCallback):
         self.heartRate=0
         self.beatCount=0
         self.lastBeat=0
-    def process(self, msg):
+    def process(self, msg, *args):
+        print args
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             self.heartRate = ord(msg.payload[-1])
             self.beatCount = ord(msg.payload[-2])
@@ -44,8 +45,12 @@ class heartRateCallback(event.EventCallback):
 class temperatureCallback(event.EventCallback):
     def __init__(self):
         self.temperature=0
-    def process(self, msg):
+    def process(self, msg, *args):
+        print args
+        print args
+
         if isinstance(msg, message.ChannelBroadcastDataMessage):
+            print msg.payload
             if ord(msg.payload[0])==1:
                 tempTemperature= struct.unpack('<h',"".join(msg.payload[-2:]))[0]*0.01
                 if tempTemperature!=0:
@@ -93,9 +98,13 @@ class cadenceCallback(event.EventCallback):
     def stop(self):
         self.channel.close()
         self.channel.unassign()
-    def process(self,msg):
+    def process(self,msg, *args):
+        print msg
+        print args
+        print type(msg.payload)
+        print len(msg.payload)
         if isinstance(msg, message.ChannelBroadcastDataMessage):
-            (pedalTime,pedalRevolutions,wheelTime,wheelRevolutions)=numpy.array(numpy.fromstring("".join(msg.payload[-8:]),dtype=numpy.uint16),dtype="float")
+            (pedalTime,pedalRevolutions,wheelTime,wheelRevolutions)=numpy.array(numpy.frombuffer(msg.payload[-8:],dtype=numpy.uint16),dtype="float")
             pedalTime/=1024.
             wheelTime/=1024.
             if wheelTime<self.lastWheelTime:
