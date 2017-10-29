@@ -48,9 +48,9 @@ class TemperatureCallback(event.EventCallback):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             print msg.payload
             if ord(msg.payload[0]) == 1:
-                tempTemperature = struct.unpack('<h', "".join(msg.payload[-2:]))[0] * 0.01
-                if tempTemperature != 0:
-                    self.temperature = tempTemperature
+                temperature = struct.unpack('<h', "".join(msg.payload[-2:]))[0] * 0.01
+                if temperature != 0:
+                    self.temperature = temperature
 
     def start(self, antnode, network):
         self.channel = antnode.getFreeChannel()
