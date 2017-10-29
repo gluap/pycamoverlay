@@ -15,7 +15,6 @@ class HeartRateCallback(event.EventCallback):
         self.channel = None
 
     def process(self, msg, *args):
-        print args
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             self.heartRate = ord(msg.payload[-1])
             self.beatCount = ord(msg.payload[-2])
@@ -42,11 +41,7 @@ class TemperatureCallback(event.EventCallback):
         self.temperature = 0
 
     def process(self, msg, *args):
-        print args
-        print args
-
         if isinstance(msg, message.ChannelBroadcastDataMessage):
-            print msg.payload
             if ord(msg.payload[0]) == 1:
                 temperature = struct.unpack('<h', "".join(msg.payload[-2:]))[0] * 0.01
                 if temperature != 0:
@@ -101,10 +96,6 @@ class CadenceCallback(event.EventCallback):
         self.channel.unassign()
 
     def process(self, msg, *args):
-        print msg
-        print args
-        print type(msg.payload)
-        print len(msg.payload)
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             (pedalTime, pedalRevolutions, wheelTime, wheelRevolutions) = numpy.array(
                 numpy.frombuffer(msg.payload[-8:], dtype=numpy.uint16), dtype="float")
@@ -197,12 +188,13 @@ if __name__ == '__main__':
     test = AntSensors()
     for i in range(200):
         try:
-            print test.heartrate,
-            print test.cadence,
-            print test.wheel_rpm,
-            print test.temperature
+            print(test.heartrate)
+            print(test.cadence)
+            print(test.wheel_rpm)
+            print(test.temperature)
             time.sleep(.1)
         except KeyboardInterrupt:
-            test.stopController()
-            test.join()
+            test.stop()
             break
+
+    test.stop()
