@@ -1,20 +1,18 @@
-import sys
 import time
-from ant.core import driver, node, event, message, log
+from ant.core import driver, event, message
 from ant.core.node import Node, Network, ChannelID
 from ant.core.constants import CHANNEL_TYPE_TWOWAY_RECEIVE, TIMEOUT_NEVER
-
 from ant.core.constants import NETWORK_KEY_ANT_PLUS, NETWORK_NUMBER_PUBLIC
-from ant.plus.heartrate import *
 import struct
 import numpy
 
 
-class heartRateCallback(event.EventCallback):
+class HeartRateCallback(event.EventCallback):
     def __init__(self):
         self.heartRate = 0
         self.beatCount = 0
         self.lastBeat = 0
+        self.channel = None
 
     def process(self, msg, *args):
         print args
@@ -34,19 +32,12 @@ class heartRateCallback(event.EventCallback):
         self.channel.open()
         self.channel.registerCallback(self)
 
-        #    channel = antnode.getFreeChannel()
-        # channel.name = 'C:WGT'
-        # channel.assign(net, CHANNEL_TYPE_TWOWAY_RECEIVE)
-        # channel.setID(119, 0, 0)
-        # channel.period = 0x2000  # nebo 0x0020 ???
-        # channel.frequency = 0x39
-
     def stop(self):
         self.channel.close()
         self.channel.unassign()
 
 
-class temperatureCallback(event.EventCallback):
+class TemperatureCallback(event.EventCallback):
     def __init__(self):
         self.temperature = 0
 
@@ -77,7 +68,7 @@ class temperatureCallback(event.EventCallback):
         self.channel.unassign()
 
 
-class cadenceCallback(event.EventCallback):
+class CadenceCallback(event.EventCallback):
     def __init__(self, circ=2.136):
         '''
         to calculate speed from RPM give the circumference of the wheel.
@@ -147,7 +138,7 @@ class cadenceCallback(event.EventCallback):
                 self.cadence = 0.
 
 
-class antDevices():
+class AntDevices(object):
     def __init__(self):
         self.stick = driver.USB2Driver(idProduct=0x1008)
         self.antnode = Node(self.stick)
@@ -169,14 +160,14 @@ class antDevices():
         self.stop()
 
 
-class antSensors():
+class AntSensors(object):
     def __init__(self):
-        self.myMonitors = antDevices()
-        self.HRM = heartRateCallback()
+        self.myMonitors = AntDevices()
+        self.HRM = HeartRateCallback()
         self.myMonitors.add_device(self.HRM)
-        self.TEM = temperatureCallback()
+        self.TEM = TemperatureCallback()
         self.myMonitors.add_device(self.TEM)
-        self.CDM = cadenceCallback()
+        self.CDM = CadenceCallback()
         self.myMonitors.add_device(self.CDM)
 
     def __exit__(self):
@@ -203,7 +194,7 @@ class antSensors():
 
 
 if __name__ == '__main__':
-    test = antSensors()
+    test = AntSensors()
     for i in range(200):
         try:
             print test.heartRate,
