@@ -177,7 +177,7 @@ class AntSensors(object):
         self.myMonitors.stop()
 
     @property
-    def heartRate(self):
+    def heartrate(self):
         return self.HRM.heartRate
 
     @property
@@ -185,7 +185,7 @@ class AntSensors(object):
         return self.CDM.cadence
 
     @property
-    def wheelRPM(self):
+    def wheel_rpm(self):
         return self.CDM.wheelRPM
 
     @property
@@ -197,9 +197,9 @@ if __name__ == '__main__':
     test = AntSensors()
     for i in range(200):
         try:
-            print test.heartRate,
+            print test.heartrate,
             print test.cadence,
-            print test.wheelRPM,
+            print test.wheel_rpm,
             print test.temperature
             time.sleep(.1)
         except KeyboardInterrupt:
