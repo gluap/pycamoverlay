@@ -38,8 +38,8 @@ class AvconvTranscoder(object):
     def find_resolution(self, infile):
         if os.path.isfile(infile):
             width, height = get_size(infile)
-            print("resolution: {}x{}".format(self.width, self.height))
-            if self.width == 0 or self.height == 0:
+            print("resolution: {}x{}".format(width, height))
+            if width == 0 or height == 0:
                 raise Exception("avconv could not determine input resolution")
         else:
             raise IOError("input file %s does not exist" % infile)
@@ -86,16 +86,13 @@ class AvconvTranscoder(object):
         self.avconv_out.stdin.write(rawNumpyData.tostring())
 
     def __del__(self):
-        self.avconv_in.send_signal(2)
+        try:
+            self.avconv_in.send_signal(2)
         # self.avconvIn.terminate()
         # self.avconvIn.kill()
-        self.avconv_out.send_signal(2)
-        self.avconv_in.wait(2)
-        self.avconv_out.wait(2)
-        self.avconf_out.terminate()
-        self.avconv_in.terminate()
-    # self.avconvOut.terminate()
-    # self.avconvOut.kill()
+            self.avconv_out.send_signal(2)
+        except AttributeError:
+            pass
 
     def close(self):
         self.__del__()
