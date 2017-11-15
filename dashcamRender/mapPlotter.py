@@ -10,6 +10,8 @@ import PIL
 import PIL.ImageDraw
 import subprocess
 import logging
+import requests
+import StringIO
 logger=logging.getLogger(__name__)
 
 class mapDisplay:
@@ -24,13 +26,8 @@ class mapPlotter:
     def __init__(self, mapfile='osmt.xml', map_output='mymap.png', latLonWidth=.025, centerLat=49.88, centerLon=8.67,
                  size=4 * 1024):
         self.m = mapnik.Map(size, size)
-        logger.info("m.srs={}".format(self.m.srs))
         self.m.srs=("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over")
-        mapnik.load_map(self.m, mapfile)
         self.merc = mapnik.Projection(self.m.srs)
-
-
-        logger.info("m.srs={}".format(self.m.srs))
         self.longlat = mapnik.Projection('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
         self.transform = mapnik.ProjTransform(self.longlat, self.merc)
         bbox_latlon = (mapnik.Envelope(centerLon - latLonWidth, centerLat - latLonWidth, centerLon + latLonWidth,
@@ -39,11 +36,13 @@ class mapPlotter:
         self.m.zoom_to_box(bbox)
         envelope = self.m.envelope()
         envelope_numbers = envelope.__getinitargs__()
-        mapnik.render_to_file(self.m, map_output)
         self.xl, self.yl = (envelope_numbers[0], envelope_numbers[1])
         self.xh, self.yh = (envelope_numbers[2], envelope_numbers[3])
-        subprocess.call(["convert", "-define", "png:color-type=6", "mymap.png", "mymap2.png"])
-        self.mapImage = PIL.Image.open("mymap2.png")
+        image = requests.get("http://oldweb.das-konnektiv.de:5000/map/{lat}/{lon}/{width}/{size}".format(
+            lat=centerLat, lon=centerLon, width=latLonWidth, size=size))
+        logger.info(image)
+
+        self.mapImage = PIL.Image.open(StringIO.StringIO(image.content))
 
     def plotMapLatLon(self, lon, lat, previousPoints=False):
         x, y = self.latLonToXY(lon, lat)
