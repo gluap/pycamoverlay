@@ -5,27 +5,32 @@ Created on Jul 6, 2014
 '''
 import mapnik
 import numpy
+import math
 import PIL
 import PIL.ImageDraw
 import subprocess
-
+import logging
+logger=logging.getLogger(__name__)
 
 class mapDisplay:
     def __init__(self):
-        print
-        "inited"
+        print("inited")
 
     def draw(self, frame):
-        print
-        "should draw"
+        print("should draw")
 
 
 class mapPlotter:
     def __init__(self, mapfile='osmt.xml', map_output='mymap.png', latLonWidth=.025, centerLat=49.88, centerLon=8.67,
                  size=4 * 1024):
         self.m = mapnik.Map(size, size)
+        logger.info("m.srs={}".format(self.m.srs))
+        self.m.srs=("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over")
         mapnik.load_map(self.m, mapfile)
         self.merc = mapnik.Projection(self.m.srs)
+
+
+        logger.info("m.srs={}".format(self.m.srs))
         self.longlat = mapnik.Projection('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
         self.transform = mapnik.ProjTransform(self.longlat, self.merc)
         bbox_latlon = (mapnik.Envelope(centerLon - latLonWidth, centerLat - latLonWidth, centerLon + latLonWidth,
@@ -47,8 +52,6 @@ class mapPlotter:
             draw = PIL.ImageDraw.Draw(img)
             x1, y1 = self.calcPos(x, y)
             coords = self.calcPolygonCoords(previousPoints[0], previousPoints[1], shift=[x1 - 150, y1 - 150])
-            print
-            coords[0]
             draw.line(coords.reshape(coords.shape[0] * coords.shape[1]).tolist(), fill=(180, 0, 0, 255), width=5)
         return img
 
@@ -58,7 +61,7 @@ class mapPlotter:
         return coord_merc.x, coord_merc.y
 
     def plotMap(self, x, y):
-        x1, y1 = self.calcPos(x, y)
+        x1, y1 = self.calcPos(x,y)
         tempImage = self.mapImage.crop([int(x1) - 150, int(y1) - 150, int(x1) + 150, int(y1) + 150])
         draw = PIL.ImageDraw.Draw(tempImage)
         draw.ellipse((145, 145, 155, 155), fill=(180, 0, 0, 255))
