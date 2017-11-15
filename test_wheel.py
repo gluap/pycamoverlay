@@ -19,13 +19,11 @@ while True:
 #        antSensorStore.addData(i,antSensor.heartRate,antSensor.wheelRPM,antSensor.cadence,antSensor.temperature)
         print "cadence=%f rpm=%f" %(antSensor.cadence,antSensor.wheel_rpm)
         print "revolutions: c=%f, w=%f" % (antSensor.CDM.wheelRevolutions,antSensor.CDM.pedalRevolutions)
+        print "heart %d beatcount %d last %d" % (antSensor.heartrate, antSensor.HRM.beatCount, antSensor.HRM.lastBeat)
+        print "temperature %f" % (antSensor.temperature)
         time.sleep(1)
 #            print antSensor.temperature
     except KeyboardInterrupt:
-
-        antSensor.stop()
-        break
-    except:
 
         antSensor.stop()
         break
