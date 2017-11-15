@@ -1,1 +1,6 @@
 *.ttf
+*.png
+*.mp4
+.idea
+Untitled0.ipynb
+.ipynb.checkpoints
