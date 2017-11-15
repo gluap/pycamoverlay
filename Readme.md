@@ -48,3 +48,30 @@ sudo apt-get install libmapnik libmapnik-dev mapnik-utils python-mapnik
 
 under 14.04 try the versions from the ubuntu repositories:
 ```sudo aptitude install imposm python-imposm libav-tools```
+
+
+### Setting up the GPS as a source of system time for the PI
+(assuming a serial GPS that has pps[pulse per second] output, for instance this: https://thepihut.com/products/gps-module-with-enclosure
+
+- install gpsd
+- install chrony
+- systemctl disable systemd-timesyncd *optional, to make the GPS the only source of time. Makes it easier to test
+whether time via gpsd/chrony works correctly.*
+
+# setting up database docker
+
+sudo docker build . -t postgres-osm
+sudo docker run -d --name postgres-osm -v pgsql_data:/var/lib/postgresql postgres-osm:latest
+
+# setting up docker for video conversion
+
+install postgres-osm
+install postgres-client
+install osm2pgsql
+
+
+
+# docker for rendering?
+install osmt
+install librsvg2-bin
+
