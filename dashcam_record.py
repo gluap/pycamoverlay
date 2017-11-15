@@ -9,7 +9,7 @@ import time
 
 debugging = True
 print("starting ant sensor")
-antSensor = dashcam.antSensors()
+antSensor = dashcam.AntSensors()
 randint = int(random.random() * 50000000)
 
 # print "sleeping 5 seconds to allow ant sensor system to start"
@@ -48,11 +48,11 @@ while True:
             print("dumped track store")
             if debugging:
                 print("ant: %f %f %f %f" % (
-                    antSensor.heartRate, antSensor.wheelRPM, antSensor.cadence, antSensor.temperature))
+                    antSensor.heartrate, antSensor.wheel_rpm, antSensor.cadence, antSensor.temperature))
         camera.wait_recording(.05)
         if camera.frame.index > lastIndex:
             lastIndex = camera.frame.index
-            antSensorStore.addData(camera.frame.index, antSensor.heartRate, antSensor.wheelRPM, antSensor.cadence,
+            antSensorStore.addData(camera.frame.index, antSensor.heartrate, antSensor.wheel_rpm, antSensor.cadence,
                                    antSensor.temperature)
         if camera.frame.index > maxframes:
             print("reached frame limit, closing\n")
