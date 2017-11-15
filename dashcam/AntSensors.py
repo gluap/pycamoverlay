@@ -18,7 +18,7 @@ class HeartRateCallback(event.EventCallback):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             self.heartRate = msg.payload[-1]
             self.beatCount = msg.payload[-2]
-            self.lastBeat = struct.unpack('<H', "".join(msg.payload[-4:-2]))[0] / 1024.
+            self.lastBeat = struct.unpack('<H', "".join(msg.payload[-4:-2])) / 1024.
 
     def start(self, antnode, network):
         self.channel = antnode.getFreeChannel()
@@ -43,7 +43,7 @@ class TemperatureCallback(event.EventCallback):
     def process(self, msg, *args):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             if msg.payload[0] == 1:
-                temperature = struct.unpack('<h', "".join(msg.payload[-2:]))[0] * 0.01
+                temperature = struct.unpack('<h', "".join(msg.payload[-2:])) * 0.01
                 if temperature != 0:
                     self.temperature = temperature
 
