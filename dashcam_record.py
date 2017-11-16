@@ -32,7 +32,7 @@ framepositions = {}
 lastIndex = 10
 lastLat = 0
 
-gpsc = dashcam.gpsController()
+gpsc = dashcam.GPSWatcher()
 trackStore = dashcamData.gpsData()
 gpsc.start()
 
@@ -58,21 +58,21 @@ while True:
             print("reached frame limit, closing\n")
             camera.stop_recording()
             trackStore.stopController()
-            gpsc.stopController()
+            gpsc.stop_controller()
             antSensor.stop()
             trackStore.join()
             gpsc.join()
             break
     except KeyboardInterrupt:
         camera.stop_recording()
-        gpsc.stopController()
+        gpsc.stop_controller()
         gpsc.join()
         antSensor.stop()
         antSensor.join()
         break
     except:
         camera.stop_recording()
-        gpsc.stopController()
+        gpsc.stop_controller()
         gpsc.join()
         antSensor.stop()
         antSensor.join()
