@@ -2,7 +2,7 @@
 import picamera
 import dashcam
 import logging
-formatter = logging.basicConfig(format='[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s"
+formatter = logging.basicConfig(format='[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
                                 level=logging.info)
 
 maxframes = 25 * 120
