@@ -56,21 +56,14 @@ while True:
                                    antSensor.temperature)
         if camera.frame.index > maxframes:
             print("reached frame limit, closing\n")
-            camera.stop_recording()
             trackStore.stopController()
             gpsc.stop_controller()
             antSensor.stop()
             trackStore.join()
             gpsc.join()
+            camera.stop_recording()
             break
     except KeyboardInterrupt:
-        camera.stop_recording()
-        gpsc.stop_controller()
-        gpsc.join()
-        antSensor.stop()
-        antSensor.join()
-        break
-    except:
         camera.stop_recording()
         gpsc.stop_controller()
         gpsc.join()
