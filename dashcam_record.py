@@ -61,7 +61,6 @@ while True:
                                    antSensor.temperature)
         if camera.frame.index > maxframes:
             print("reached frame limit, closing\n")
-            trackStore.stopController()
             try:
                 gpsc.stop_controller()
             except AttributeError:
