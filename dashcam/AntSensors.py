@@ -33,7 +33,6 @@ class HeartRateCallback(event.EventCallback):
 
     def stop(self):
         self.channel.close()
-        self.channel.unassign()
 
 
 class TemperatureCallback(event.EventCallback):
@@ -60,7 +59,6 @@ class TemperatureCallback(event.EventCallback):
 
     def stop(self):
         self.channel.close()
-        self.channel.unassign()
 
 
 class CadenceCallback(event.EventCallback):
@@ -93,7 +91,6 @@ class CadenceCallback(event.EventCallback):
 
     def stop(self):
         self.channel.close()
-        self.channel.unassign()
 
     def process(self, msg, *args):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
