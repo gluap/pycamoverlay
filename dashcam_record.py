@@ -1,6 +1,9 @@
 #!/usr/bin/python
 import picamera
 import dashcam
+import logging
+formatter = logging.basicConfig(format='[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s"
+                                level=logging.info)
 
 maxframes = 25 * 120
 import dashcamData
@@ -57,9 +60,11 @@ while True:
         if camera.frame.index > maxframes:
             print("reached frame limit, closing\n")
             trackStore.stopController()
-            gpsc.stop_controller()
+            try:
+                gpsc.stop_controller()
+            except AttributeError:
+                pass
             antSensor.stop()
-            trackStore.join()
             gpsc.join()
             camera.stop_recording()
             break
@@ -68,5 +73,4 @@ while True:
         gpsc.stop_controller()
         gpsc.join()
         antSensor.stop()
-        antSensor.join()
         break
