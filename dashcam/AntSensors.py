@@ -130,6 +130,7 @@ class AntDevices(object):
     def __init__(self):
         self.stick = driver.USB2Driver(idProduct=0x1008)
         self.antnode = Node(self.stick)
+        self.antnode.reset(wait=True)
         self.antnode.start()
         self.network = Network(key=NETWORK_KEY_ANT_PLUS, name='N:ANT+')
         self.antnode.setNetworkKey(NETWORK_NUMBER_PUBLIC, self.network)
