@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
-import dashcamRender
+import actioncam_overlay
 import dashcamData
 import argparse
 import logging
@@ -17,19 +17,19 @@ args = parser.parse_args()
 logger.info("# initializing map")
 
 logger.info("# initializing transcoder")
-transcoder = dashcamRender.AvconvTranscoder(args.infile + ".h264", args.outfile + ".avi")
+transcoder = actioncam_overlay.AvconvTranscoder(args.infile + ".h264", args.outfile + ".avi")
 logger.info("# transcoder initialized")
 logger.info("# video size: %dx%d" % (transcoder.width, transcoder.height))
 gpscoords = dashcamData.gpsData(args.infile + ".track")
 #distances = dashcamData.distanceData(args.infile + ".dst")
 #antData = dashcamData.antData(args.infile + ".ant")
 #logger.info(distances.distances)
-velocityDisplay = dashcamRender.gpsVelocityDisplay(gpscoords.speedF)
-#distanceDisplay = dashcamRender.distanceDisplay(distances, fast=True)
-#cadenceDisplay = dashcamRender.cadenceDisplay(antData.cadences)
-#temperatureDisplay = dashcamRender.temperatureDisplay(antData.temperatures)
-#heartRateDisplay = dashcamRender.heartRateDisplay(antData.heartRates)
-#wheelRPM = dashcamRender.sensorVelocityDisplay(antData.wheelRPMs)
+velocityDisplay = actioncam_overlay.gpsVelocityDisplay(gpscoords.speedF)
+#distanceDisplay = actioncam_overlay.distanceDisplay(distances, fast=True)
+#cadenceDisplay = actioncam_overlay.cadenceDisplay(antData.cadences)
+#temperatureDisplay = actioncam_overlay.temperatureDisplay(antData.temperatures)
+#heartRateDisplay = actioncam_overlay.heartRateDisplay(antData.heartRates)
+#wheelRPM = actioncam_overlay.sensorVelocityDisplay(antData.wheelRPMs)
 fast = True
 currentFrame = 0
 lastlon = 0
@@ -44,8 +44,8 @@ while True:
             lastlon = float(gpscoords.lonF(currentFrame))
             lastlat = float(gpscoords.latF(currentFrame))
             logger.info("{}, {}".format(lastlat,lastlon))
-            mapPlotter = dashcamRender.mapPlotter(mapfile=args.mapfile, size=1024, latLonWidth=.01, centerLat=lastlat,
-                                                  centerLon=lastlon)
+            mapPlotter = actioncam_overlay.mapPlotter(mapfile=args.mapfile, size=1024, latLonWidth=.01, centerLat=lastlat,
+                                                      centerLon=lastlon)
 
         overlayMap = mapPlotter.plotMapLatLon(float(gpscoords.lonF(currentFrame)),float(gpscoords.latF(currentFrame)))
         currentImage.paste(overlayMap, (0, 0), mask=overlayMap)

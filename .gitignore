@@ -5,3 +5,4 @@
 *.pyc
 Untitled0.ipynb
 .ipynb.checkpoints
+testdata/*

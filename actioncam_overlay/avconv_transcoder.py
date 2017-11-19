@@ -14,7 +14,7 @@ from distutils.spawn import find_executable
 
 if find_executable('avconv') is None:
     if find_executable('ffmpeg') is None:
-        raise EnvironmentError("You need to have avconv or ffmpeg installed in order for dashcamRender to work")
+        raise EnvironmentError("You need to have avconv or ffmpeg installed in order for actioncam_overlay to work")
     else:
         AVCONV_BINARY = find_executable('ffmpeg')
 else:
