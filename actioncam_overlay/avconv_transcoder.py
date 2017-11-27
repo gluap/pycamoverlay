@@ -26,13 +26,14 @@ class AvconvTranscoder(object):
     class to transcode using ffmpeg
     '''
 
-    def __init__(self, infile, outfile):
+    def __init__(self, infile, outfile, fps=25):
         '''
         Constructor
         '''
         self.width, self.height = self.find_resolution(infile)
         self.avconv_in = self.init_reader(infile)
         self.avconv_out = self.init_writer(outfile)
+        self.fps = fps
 
 
     def find_resolution(self, infile):
@@ -61,7 +62,7 @@ class AvconvTranscoder(object):
                    '-f', 'rawvideo',
                    '-s', '%dx%d' % (self.width, self.height),  # size of one frame
                    '-pix_fmt', 'rgb24',
-                   '-r', '25',  # frames per second
+                   '-r', str(self.fps),  # frames per second
                    '-i', '-',  # The imput comes from a pipe
                    '-an',  # Tells FFMPEG not to expect any audio
                    '-c:v', 'h264',
