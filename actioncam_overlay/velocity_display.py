@@ -18,7 +18,7 @@ class gpsVelocityDisplay:
         temp = self.smallCanvas.copy()
         draw = PIL.ImageDraw.Draw(temp)
         font = PIL.ImageFont.truetype("Ubuntu-C.ttf", 50)
-        draw.text((10, 0), "%d km/h" % (int(self.speed(frame) * 3.6)), (0, 0, 0, 255), font=font)
+        draw.text((10, 0), "%d km/h" % (int(self.speed(frame))), (0, 0, 0, 255), font=font)
         return temp
 
     def draw(self, frame, fast=False):
@@ -27,6 +27,6 @@ class gpsVelocityDisplay:
         temp = self.canvas.copy()
         draw = PIL.ImageDraw.Draw(temp)
         font = PIL.ImageFont.truetype("Ubuntu-C.ttf", 150)
-        draw.text((10, 0), "%d km/h" % (int(self.speed(frame) * 3.6)), (0, 0, 0, 255), font=font)
+        draw.text((10, 0), "%d km/h" % (int(self.speed(frame))), (0, 0, 0, 255), font=font)
         img_resized = temp.resize(self.size, PIL.Image.ANTIALIAS)
         return img_resized

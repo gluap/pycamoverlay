@@ -30,10 +30,10 @@ class AvconvTranscoder(object):
         '''
         Constructor
         '''
+        self.fps = fps
         self.width, self.height = self.find_resolution(infile)
         self.avconv_in = self.init_reader(infile)
         self.avconv_out = self.init_writer(outfile)
-        self.fps = fps
 
 
     def find_resolution(self, infile):
@@ -53,8 +53,9 @@ class AvconvTranscoder(object):
                    '-f', "rawvideo",
                    '-pix_fmt', 'rgb24',
                    '-v', 'quiet',
+                   '-an',
                    '-vcodec', "rawvideo", '-']
-        return subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10 ** 9)
+        return subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=2*10 ** 9)
 
     def init_writer(self, outfile):
         command = [AVCONV_BINARY,
@@ -65,7 +66,7 @@ class AvconvTranscoder(object):
                    '-r', str(self.fps),  # frames per second
                    '-i', '-',  # The imput comes from a pipe
                    '-an',  # Tells FFMPEG not to expect any audio
-                   '-c:v', 'h264',
+                   '-c:v', 'libx264',
                    '-v', 'quiet',
                    outfile]
         return subprocess.Popen(command, stdin=subprocess.PIPE)
@@ -100,7 +101,7 @@ class AvconvTranscoder(object):
 
 
 def get_size(pathtovideo):
-    pattern = re.compile(r'Stream.*Video.*\s([0-9]+)x([0-9]{3})')
+    pattern = re.compile(r'Stream.*Video.*\s([0-9]+)x([0-9]+)')
     p = subprocess.Popen([AVCONV_BINARY, '-i', pathtovideo],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)

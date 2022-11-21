@@ -72,7 +72,7 @@ class ArrayValueDisplay(object):
 class HeartRateDisplay(ArrayValueDisplay):
     def __init__(self, speedF, size=[200, 60]):
         self.caption = "HEART RATE"
-        super(HeartRateDisplay, self).__init__(speedF, size, symbol_before=u" heartrate ", symbol_after="")
+        super(HeartRateDisplay, self).__init__(speedF, size, symbol_before=u"♥ ", symbol_after="")
 
 
 class SensorVelocityDisplay(ArrayValueDisplay):
@@ -91,4 +91,4 @@ class CadenceDisplay(ArrayValueDisplay):
 class TemperatureDisplay(ArrayValueDisplay):
     def __init__(self, speedF, size=[200, 60]):
         self.caption = "TEMPERATURE"
-        super(TemperatureDisplay, self).__init__(speedF, size, symbol_before=u"", symbol_after=u"deg")
+        super(TemperatureDisplay, self).__init__(speedF, size, symbol_before=u"", symbol_after=u"°C")
